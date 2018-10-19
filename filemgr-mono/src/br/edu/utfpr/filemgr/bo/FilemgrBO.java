@@ -1,15 +1,15 @@
 package br.edu.utfpr.filemgr.bo;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStreamReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 public class FilemgrBO {
 
@@ -43,48 +43,38 @@ public class FilemgrBO {
 		}
 	}
 
-	public Response upload(byte[] arquivo, String filename, String status) {
+	public Response upload(InputStream uploadedInputStream, FormDataContentDisposition fileDetail) {
+		String uploadedFileLocation = this.getCaminhopasta() + fileDetail.getFileName();
 
-		if (status.equalsIgnoreCase("F")) {
-			new File(this.getCaminhopasta() + filename + ".temp").renameTo(new File(this.getCaminhopasta() + filename));
-			return Response.ok().build();
-		}
+		// save it
+		writeToFile(uploadedInputStream, uploadedFileLocation);
 
-		OutputStream outputStream = null;
+		String output = "File uploaded to: " + uploadedFileLocation;
+
+		return Response.status(200).entity(output).build();
+	}
+
+	
+	private void writeToFile(InputStream uploadedInputStream,
+			String uploadedFileLocation) {
+
 		try {
+			OutputStream out = new FileOutputStream(new File(
+					uploadedFileLocation));
+			int read = 0;
+			byte[] bytes = new byte[1024];
 
-			int initRemove = 0;
-			int fimRemove = 0;
-			InputStreamReader entradaFormatada = new InputStreamReader(new ByteArrayInputStream(arquivo));
-			BufferedReader entradaString = new BufferedReader(entradaFormatada);
-			String linha = entradaString.readLine();
-			boolean fimInit = false;
-			while (linha != null) {
-				if (!fimInit) {
-					fimInit = linha.equalsIgnoreCase("Content-Transfer-Encoding: binary");
-					initRemove += linha.getBytes().length + 2;
-				}
-				fimRemove = linha.getBytes().length + 4;
-				linha = entradaString.readLine();
+			out = new FileOutputStream(new File(uploadedFileLocation));
+			while ((read = uploadedInputStream.read(bytes)) != -1) {
+				out.write(bytes, 0, read);
 			}
+			out.flush();
+			out.close();
+		} catch (IOException e) {
 
-			byte[] filteredByteArray = Arrays.copyOfRange(arquivo, initRemove + 2, arquivo.length - fimRemove);
-
-			outputStream = new FileOutputStream(new File(this.getCaminhopasta() + filename + ".temp"), status.equalsIgnoreCase("I") ? false : true);
-			outputStream.write(filteredByteArray);
-
-			return Response.ok().build();
-
-		} catch (Exception e) {
-			return Response.status(Response.Status.BAD_REQUEST).entity("Não foi possível salvar arquivo! Motivo: " + e.getMessage()).build();
-		} finally {
-			if (outputStream != null) {
-				try {
-					outputStream.close();
-				} catch (Exception e) {
-				}
-			}
+			e.printStackTrace();
 		}
+
 	}
 
 }
