@@ -1,28 +1,43 @@
-<!doctype html>
-<html lang="pt">
+<!DOCTYPE html>
+<html>
 <head>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
-	<script src="http://code.jquery.com/jquery-2.0.1.min.js"></script>
-	<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<title>PÃ¡gina de controle Lixeiras</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+<script src="http://code.jquery.com/jquery-2.0.1.min.js"></script>
+<script
+	src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 
 </head>
 <body>
-	<h3 id="heading-1" class="ui-bar ui-bar-a ui-corner-all">Lixeiras</h3>
-	<div class="ui-body ui-body-a ui-corner-all">
-		<p>Listagem de Registros</p>
-		<a href="" id="btnListar" class="ui-btn ui-corner-all ui-btn-b">Listar Todos</a>
-		<table id="table-1">
-			<tr>
-				<th>Nome</th>
-				<th>Sensor 1</th>
-				<th>Sensor 2</th>
-				<th>Sensor 2</th>
-			</tr>
-		</table>
-	</div>
+	<h1>FileMGR</h1>
+	<br>
+	<h2>Método de Upload</h2>
+	<form action="http://localhost:8080/filemgr-dk/rest/filemgr/upload" method="post"
+		enctype="multipart/form-data">
+
+		<label for="file">Selecione um arquivo:</label>
+		<input type="file" name="file"/>
+		<input type="submit" value="Fazer Upload" />
+	</form>
+
+	<br>
+	<h2>Método de Download</h2>
+	<form action="http://localhost:8080/filemgr-dk/rest/filemgr/download/nomearquivo=" method="get">
+
+		<div class="ui-field-contain">
+			<label for="text-1">Nome do Arquivo:</label> <input name="text-1"
+				id="text-1" data-clear-btn="true" value="" type="text" />
+		</div>
+
+		<input type="submit" value="Fazer Download" />
+
+	</form>
+
 </body>
+
+<script>
+	var nomearquivo = "";
+
+</script>
 </html>
